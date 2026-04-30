@@ -26,11 +26,13 @@
 
         <div class="mb-3">
             <label>หมวดหมู่</label>
-            <select name="category" class="form-control">
-                <option value="นิยาย" {{ $book->category == 'นิยาย' ? 'selected' : '' }}>นิยาย</option>
-                <option value="ความรู้" {{ $book->category == 'ความรู้' ? 'selected' : '' }}>ความรู้</option>
-                <option value="การ์ตูน" {{ $book->category == 'การ์ตูน' ? 'selected' : '' }}>การ์ตูน</option>
-                <option value="เทคโนโลยี" {{ $book->category == 'เทคโนโลยี' ? 'selected' : '' }}>เทคโนโลยี</option>
+            <select name="category_id" class="form-control">
+                <option value="">เลือกหมวดหมู่</option>
+                @foreach($category as $cat)
+                    <option value="{{ $cat->id }}" {{ old('category_id', $book->category_id) == $cat->id ? 'selected' : '' }}>
+                        {{ $cat->name }}
+                    </option>
+                @endforeach
             </select>
         </div>
                 <div class="mb-3">

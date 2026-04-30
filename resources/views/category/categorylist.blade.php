@@ -3,10 +3,10 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1>ประเภทหนังสือ</h1>
+            <h1>ประเภทหมวดหมู่</h1>
 
-            <a href="{{ route('books.create') }}" class="btn btn-success">
-                เพิ่มประเภทหนังสือใหม่
+            <a href="{{ route('category.create') }}" class="btn btn-success">
+                เพิ่มหมวดหมู่ใหม่
             </a>
         </div>
 
@@ -16,16 +16,19 @@
                     value="{{ request('search') }}">
             </div>
 
-            <div class="col-md-4">
+            {{-- <div class="col-md-4">
                 <select name="category" class="form-control">
-                    <option value="">เลือกหมวดหมู่</option>
-                    <option value="นิยาย" {{ request('category') == 'นิยาย' ? 'selected' : '' }}>นิยาย</option>
-                    <option value="ความรู้" {{ request('category') == 'ความรู้' ? 'selected' : '' }}>ความรู้</option>
-                    <option value="การ์ตูน" {{ request('category') == 'การ์ตูน' ? 'selected' : '' }}>การ์ตูน</option>
-                    <option value="เทคโนโลยี" {{ request('category') == 'เทคโนโลยี' ? 'selected' : '' }}>เทคโนโลยี</option>
-                    <option value="โรแมนติก" {{ request('category') == 'โรแมนติก' ? 'selected' : '' }}>โรแมนติก</option>
+
+                    @forelse($category as $cat)
+                        <option value="{{ $cat->name }}" {{ request('category') == $cat->name ? 'selected' : '' }}>
+                            {{ $cat->name }}
+                        </option>
+                    @empty
+                        <option disabled selected>ยังไม่มีหมวดหมู่</option>
+                    @endforelse
+
                 </select>
-            </div>
+            </div> --}}
 
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">
@@ -38,48 +41,48 @@
             <thead>
                 <tr>
                     <th>ชื่อหนังสือ</th>
-                    <th>ปีที่พิมพ์</th>
-                    <th>หมวดหมู่</th>
-                    <th>สถานะ</th>
-                    <th>จัดการ</th>
+                    <th>จำนวนหนังสือ</th>
                 </tr>
             </thead>
 
             <tbody>
-                @foreach ($books as $book)
+                @foreach ($category as $cat)
                     <tr>
-                        <td>{{ $book->title }}</td>
-                        <td>{{ $book->published_date }}</td>
-                        <td>{{ $book->category }}</td>
-                        <td>
-                            @if ($book->is_lend)
-                                <span class="text-danger">ถูกยืม</span>
-                            @else
-                                <span class="text-success">ว่าง</span>
-                            @endif
-                        </td>
-
-                        <td>
-                            <a href="{{ route('books.showdesc', $book->id) }}" class="btn btn-primary btn-sm">
-                                ดูรายละเอียด
-                            </a>
-
-                            <a href="{{ route('books.edit', $book->id) }}" class="btn btn-primary btn-sm">
-                                แก้ไข
-                            </a>
-
-                            <form method="POST" action="{{ route('books.destroy', $book->id) }}" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger btn-sm">ลบ</button>
-                            </form>
-                        </td>
+                        <td>{{ $cat->name }}</td>
+                        <td>{{ $cat->books_count }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+    </div>
 
-        @foreach ($books as $book)
+{{-- @if ($book->is_lend)
+    <span class="text-danger">ถูกยืม</span>
+@else
+    <span class="text-success">ว่าง</span>
+@endif --}}
+</td>
+
+{{-- <td>
+    <a href="{{ route('books.showdesc', $book->id) }}" class="btn btn-primary btn-sm">
+        ดูรายละเอียด
+    </a>
+
+    <a href="{{ route('books.edit', $book->id) }}" class="btn btn-primary btn-sm">
+        แก้ไข
+    </a>
+
+    <form method="POST" action="{{ route('books.destroy', $book->id) }}" style="display:inline;">
+        @csrf
+        @method('DELETE')
+        <button class="btn btn-danger btn-sm">ลบ</button>
+    </form>
+</td> --}}
+</tr>
+</tbody>
+</table>
+
+{{-- @foreach ($books as $book)
             <div class="modal fade" id="editBook{{ $book->id }}" tabindex="-1">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -108,6 +111,6 @@
                     </div>
                 </div>
             </div>
-        @endforeach
-    </div>
+        @endforeach --}}
+</div>
 @endsection

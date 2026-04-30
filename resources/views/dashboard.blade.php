@@ -30,8 +30,8 @@
         </div>
         <div class = "d-flex justify-content-end gap-2">
             <a href="/books" class="btn btn-secondary">จัดการหนังสือ</a>
-            <a href="/users" class="btn btn-secondary">จัดการประเภท</a>
-            <a href="/lendings" class="btn btn-secondary">ดูการยืม</a>
+            <a href="/category" class="btn btn-secondary">จัดการประเภท</a>
+            <a href="/lendingbooks" class="btn btn-secondary">ดูการยืม</a>
 
         </div>
     </div>

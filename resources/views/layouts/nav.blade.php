@@ -1,20 +1,24 @@
   @if (Auth::check())
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid px-5">
-        <a class="navbar-brand" href="#">ยืมคืนหนังสือ</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/dashboard">แดชบอร์ด</a>
-                </li>
-                {{-- <li class="nav-item">
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+          <div class="container-fluid px-5">
+              {{-- <a class="navbar-brand" href="#">ยืมคืนหนังสือ</a> --}}
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                  aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                      <li class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="/dashboard">แดชบอร์ด</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="/users">ผู้ใช้</a>
+                      </li>
+                      {{-- <li class="nav-item">
                     <a class="nav-link" href="/edit">Edit</a>
                 </li> --}}
-                {{-- <li class="nav-item dropdown">
+                      {{-- <li class="nav-item dropdown">
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
                         <li><a class="dropdown-item" href="#">Another action</a></li>
@@ -26,21 +30,21 @@
                 </li> --}}
 
 
-                    <li class="nav-item ">
-                        <form method="POST" action="/logout">
-                            @csrf
-                            <button class="nav-link btn btn-link">Logout</button>
-                        </form>
-                    </li>
+                      <li class="nav-item ">
+                          <form method="POST" action="/logout">
+                              @csrf
+                              <button class="nav-link btn btn-link">Logout</button>
+                          </form>
+                      </li>
 
 
 
-            </ul>
-            {{-- <form class="d-flex" role="search">
+                  </ul>
+                  {{-- <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form> --}}
-        </div>
-    </div>
-</nav>
- @endif
+              </div>
+          </div>
+      </nav>
+  @endif

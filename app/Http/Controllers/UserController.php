@@ -16,7 +16,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::all();
+        return view('users.userlists', compact('users'));
     }
 
     /**
@@ -31,8 +32,13 @@ class UserController extends Controller
 
     public function showlogin()
     {
+        if (Auth::check()) {
+            return redirect('/dashboard');
+        }
         return view('login');
     }
+
+
 
     public function register()
     {
@@ -40,18 +46,18 @@ class UserController extends Controller
             'email' => 'required|email|max:255',
             'password' => 'required|string|min:8',
             'name' => 'required|string|max:255',
-            'password_confirmation' => 'required|same:password',
         ]);
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
         ]);
-        Log :: debug('New user registered: ' . $validated['email']);
-        return response()->json([
-            'status' => 'success',
-            'email' => $validated['email'],
-        ]);
+        Log::debug('New user registered: ' . $validated['email']);
+        // return response()->json([
+        //     'status' => 'success',
+        //     'email' => $validated['email'],
+        // ]);
+        return redirect('/login')->withsuccess('Registration successful. Please log in.');
     }
 
     public function login()
@@ -60,32 +66,35 @@ class UserController extends Controller
             'email' => 'required|email|max:255',
             'password' => 'required|string|min:8',
         ]);
-        $user = Auth::attempt($validated);
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
-            ], 401);
+
+        if (!Auth::attempt($validated)) {
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])->onlyInput('email');
         }
-        $accessToken = Auth::user()->createToken('access-token')->plainTextToken;
-        return response()->json([
-            'status' => 'success',
-            'email' => $validated['email'],
-            'access_token' => $accessToken,
-        ]);
+
+        request()->session()->regenerate();
+
+        return redirect()->intended('/dashboard')->with('success', 'Login successful');
     }
 
     public function logout()
     {
-    Auth::logout();
+        Auth::logout();
 
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
 
-    return redirect('/login')->with('success', 'Logout successful');
-
+        return redirect('/login')->with('success', 'Logout successful');
     }
 
+    public function showregister()
+    {
+        if (Auth::check()) {
+            return redirect('/dashboard');
+        }
+        return view('register');
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -138,8 +147,18 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'ลบผู้ใช้เรียบร้อยแล้ว');
+    }
+
+    public function indexApi()
+    {
+        $users = User::all();
+        return response()->json($users);
     }
 }

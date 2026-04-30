@@ -33,14 +33,16 @@
 
             <div class="mb-3">
                 <label>หมวดหมู่</label>
-                <select name="category" class="form-control">
+                <select name="category_id" class="form-control">
                     <option value="">-- เลือกหมวดหมู่ --</option>
-                    <option value="นิยาย">นิยาย</option>
-                    <option value="ความรู้">ความรู้</option>
-                    <option value="การ์ตูน">การ์ตูน</option>
-                    <option value="เทคโนโลยี">เทคโนโลยี</option>
+                    @foreach ($category as $cat)
+                        <option value="{{ $cat->id }}"
+                            {{ old('category_id', $book->category_id ?? '') == $cat->id ? 'selected' : '' }}>
+                            {{ $cat->name }}
+                        </option>
+                    @endforeach
                 </select>
-                @error('category')
+                @error('category_id')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>

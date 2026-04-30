@@ -18,12 +18,15 @@
 
             <div class="col-md-4">
                 <select name="category" class="form-control">
-                    <option value="">เลือกหมวดหมู่</option>
-                    <option value="นิยาย" {{ request('category') == 'นิยาย' ? 'selected' : '' }}>นิยาย</option>
-                    <option value="ความรู้" {{ request('category') == 'ความรู้' ? 'selected' : '' }}>ความรู้</option>
-                    <option value="การ์ตูน" {{ request('category') == 'การ์ตูน' ? 'selected' : '' }}>การ์ตูน</option>
-                    <option value="เทคโนโลยี" {{ request('category') == 'เทคโนโลยี' ? 'selected' : '' }}>เทคโนโลยี</option>
-                    <option value="โรแมนติก" {{ request('category') == 'โรแมนติก' ? 'selected' : '' }}>โรแมนติก</option>
+                    <option value="">-- เลือกหมวดหมู่ --</option>
+
+                    @forelse($category as $cat)
+                        <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>
+                            {{ $cat->name }}
+                        </option>
+                    @empty
+                        <option disabled selected>ยังไม่มีหมวดหมู่</option>
+                    @endforelse
                 </select>
             </div>
 
@@ -41,6 +44,7 @@
                     <th>ปีที่พิมพ์</th>
                     <th>หมวดหมู่</th>
                     <th>สถานะ</th>
+                    <th>รูปปก</th>
                     <th>จัดการ</th>
                 </tr>
             </thead>
@@ -50,7 +54,7 @@
                     <tr>
                         <td>{{ $book->title }}</td>
                         <td>{{ $book->published_date }}</td>
-                        <td>{{ $book->category }}</td>
+                        <td>{{ optional($book->category)->name }}</td>
                         <td>
                             @if ($book->is_lend)
                                 <span class="text-danger">ถูกยืม</span>
@@ -58,7 +62,14 @@
                                 <span class="text-success">ว่าง</span>
                             @endif
                         </td>
-
+                        <td>
+                            @if ($book->cover_image)
+                                <img src="{{ asset('storage/' . $book->cover_image) }}" alt="Cover Image"
+                                    style="width: 50px; height: auto;">
+                            @else
+                                ไม่มีรูปปก
+                            @endif
+                        </td>
                         <td>
                             <a href="{{ route('books.showdesc', $book->id) }}" class="btn btn-primary btn-sm">
                                 ดูรายละเอียด
@@ -96,7 +107,14 @@
                             <div class="modal-body">
                                 <input class="form-control mb-2" name="title" value="{{ $book->title }}">
                                 <input class="form-control mb-2" name="published_date" value="{{ $book->published_date }}">
-                                <input class="form-control mb-2" name="category" value="{{ $book->category }}">
+                                <select class="form-control mb-2" name="category_id">
+                                    <option value="">เลือกหมวดหมู่</option>
+                                    @foreach($category as $cat)
+                                        <option value="{{ $cat->id }}" {{ $book->category_id == $cat->id ? 'selected' : '' }}>
+                                            {{ $cat->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="modal-footer">

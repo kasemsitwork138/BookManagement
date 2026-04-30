@@ -15,9 +15,18 @@ class Book extends Model
         'title',
         'author',
         'published_date',
-        'category',
+        'category_id',
         'is_lend',
         'cover_image',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    public function lendings()
+{
+    return $this->hasMany(LendingBook::class);
+}
 
 }

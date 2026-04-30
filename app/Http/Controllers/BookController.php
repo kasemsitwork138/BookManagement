@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -26,7 +27,8 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('books.create');
+        $category = Category::all();
+        return view('books.create' , compact('category'));
     }
 
     /**
@@ -41,7 +43,7 @@ class BookController extends Controller
             'title' => 'required',
             'author' => 'required',
             'published_date' => 'required',
-            'category' => 'nullable',
+            'category_id' => 'nullable|exists:category,id',
             'cover_image' => 'nullable|image|max:2048',
         ]);
 
@@ -81,18 +83,20 @@ class BookController extends Controller
     public function showbooklist(Request $request)
     {
         $query = Book::query();
+        $category = Category::all();
+
 
         if ($request->search) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
         if ($request->category) {
-            $query->where('category', $request->category);
+            $query->where('category_id', $request->category);
         }
 
         $books = $query->get();
 
-        return view('books.booklist', compact('books'));
+        return view('books.booklist', compact('books', 'category'));
     }
 
     /**
@@ -103,9 +107,11 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
+        $category = Category::all();
         Log::info('Editing book: ' . $book->title);
 
-        return view('books.edit', compact('book'));
+
+        return view('books.edit', compact('book' , 'category'));
     }
 
     /**
@@ -121,15 +127,13 @@ public function update(Request $request, Book $book)
         'title' => 'required',
         'author' => 'required',
         'published_date' => 'required',
-        'category' => 'nullable',
-        'cover_image' => 'nullable|image|max:2048',
+        'category_id' => 'nullable|exists:category,id',
     ]);
 
+    // ถ้ามีไฟล์ใหม่ค่อยอัปเดต
     if ($request->hasFile('cover_image')) {
-        $path = $request->file('cover_image')->store('covers', 'public');
-        $validated['cover_image'] = $path;
-    } else {
-        unset($validated['cover_image']);
+        $imagePath = $request->file('cover_image')->store('covers', 'public');
+        $validated['cover_image'] = $imagePath;
     }
 
     $book->update($validated);
@@ -162,4 +166,28 @@ public function update(Request $request, Book $book)
 
         return view('books.bookdesc', compact('book'));
     }
+
+
+        public function storeApi(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required',
+            'author' => 'required',
+            'published_date' => 'required',
+            'category_id' => 'nullable|exists:category,id',
+            'cover_image' => 'nullable|image|max:2048',
+        ]);
+
+        $book = Book::create($validated);
+
+        if ($request->hasFile('cover_image')) {
+            $imagePath = $request->file('cover_image')->store('covers', 'public');
+            $book->update(['cover_image' => $imagePath]);
+        }
+
+        Log::info('Created book: ' . $validated['title']);
+
+        return response()->json(['message' => 'Created successfully', 'book' => $book], 201);
+    }
+
 }

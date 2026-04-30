@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -14,7 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        // $category = Category::All();
+        // return view('category.categorylist', compact('category'));
     }
 
     /**
@@ -24,7 +26,13 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('category.create');
+    }
+    public function showcategorylist(){
+        $category = Category::withCount('books')->get();
+        Log::info('Showing category list', ['categories' => $category]);
+        return view('category.categorylist', compact('category'));
+
     }
 
     /**
@@ -35,7 +43,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:category,name',
+        ]);
+
+        Category::create($validated);
+
+        Log::info('Category created: ' . $validated['name']);
+
+        return redirect()->route('category.index')->with('success', 'Category created successfully');
     }
 
     /**
@@ -47,6 +63,8 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         //
+        $category = Category::All();
+        return view('category.categorylist', compact('category'));
     }
 
     /**
