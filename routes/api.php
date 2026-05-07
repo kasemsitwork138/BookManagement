@@ -5,6 +5,7 @@ use App\Http\Controllers\api\BookController;
 use App\Http\Controllers\api\CategoryController;
 use App\Http\Controllers\api\LendingBookController;
 use App\Http\Controllers\api\UserController;
+use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,16 +25,19 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::post('/login', [AuthenController::class, 'login'])->name('api.login')->middleware('throttle:5,1');
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
 
 
 Route::prefix('users')->name('users.')->group(function () {
     Route::get('/', [UserController::class, 'indexApi'])->name('index');
     Route::get('/{user}', [UserController::class, 'showApi'])->name('show');
+    Route::delete('/{user}', [UserController::class , 'destroy'])->name('delete');
 });
 
 Route::prefix('books')->name('books.')->group(function () {
     Route::get('/', [BookController::class, 'indexApi'])->name('index');
+    Route::get('/showinfo', [BookController::class , 'showinfo']);
+    Route::get('/search', [BookController::class , 'showbooklist']);
     Route::post('/', [BookController::class, 'storeApi'])->name('store');
     Route::get('/{book}', [BookController::class, 'showApi'])->name('show');
     Route::put('/{book}', [BookController::class, 'updateApi'])->name('update');
@@ -51,9 +55,9 @@ Route::prefix('category')->name('category.')->group(function () {
 Route::prefix('lendingbooks')->name('lendingbooks.')->group(function () {
     Route::get('/', [LendingBookController::class, 'indexApi'])->name('index');
     Route::post('/', [LendingBookController::class, 'storeApi'])->name('store');
-    Route::get('/{lendingbook}', [LendingBookController::class, 'showApi'])->name('show');
-    Route::put('/{lendingbook}', [LendingBookController::class, 'updateApi'])->name('update');
-    Route::delete('/{lendingbook}', [LendingBookController::class, 'destroyApi'])->name('destroy');
+    Route::get('/{lendingBook}', [LendingBookController::class, 'showApi'])->name('show');
+    Route::put('/{lendingBook}', [LendingBookController::class, 'updateApi'])->name('update');
+    Route::delete('/{lendingBook}', [LendingBookController::class, 'destroyApi'])->name('destroy');
 });
 
-});
+// });

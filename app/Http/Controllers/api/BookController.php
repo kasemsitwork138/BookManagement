@@ -40,7 +40,7 @@ class BookController extends Controller
             'author' => 'required',
             'published_date' => 'required|date',
             'category_id' => 'nullable|exists:category,id',
-            'cover_image' => 'nullable|image|max:2048',
+            'cover_image' => 'nullable|image|max:10000',
         ]);
 
         $book = Book::create($validated);
@@ -62,7 +62,7 @@ class BookController extends Controller
             'author' => 'required',
             'published_date' => 'required|date',
             'category_id' => 'nullable|exists:category,id',
-            'cover_image' => 'nullable|image|max:2048',
+            'cover_image' => 'nullable|image|max:10000',
         ]);
 
         if ($request->hasFile('cover_image')) {
@@ -92,5 +92,22 @@ class BookController extends Controller
             'books_lend' => $books_lend,
             'user_total' => $user_total,
         ]);
+    }
+        public function showbooklist(Request $request)
+    {
+        $query = Book::query();
+       // $category = Category::all();
+
+
+        if ($request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+
+        $books = $query->get();
+        return response()->json($books);
     }
 }
